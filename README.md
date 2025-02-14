@@ -1,6 +1,8 @@
-# Elite Embeddedness, University Ties, and the Resurgence of Financiers in the US
+# Elite embeddedness: the rise of financiers on university boards as parallel social organizations
 
 ## By Charlie Eaton and Albina Gibadullina
+
+Publication in *Socio-Economic Review* is available open access here: https://academic.oup.com/ser/advance-article/doi/10.1093/ser/mwaf001/8002550
 
 Summary: We show that universities are social organizations parallel to the economy that provide a circuitry connecting financiers to other elites, despite growing complexity and fragmentation in finance.
 
@@ -12,6 +14,6 @@ Summary: We show that universities are social organizations parallel to the econ
   - IPEDS Institutional Characteristics
 
 **Abstract**
-Financiers have regained preeminence among economic elites, accruing growing shares of income and wealth. Yet network analyses have shown a decline in the bank-based interlocks between corporate boards that were once thought to foster financier power and elite cohesion. We ask if social organizations parallel to the economy provide a circuitry that connects financiers to other elites, despite growing complexity and fragmentation in finance. We develop and test hypotheses that apply the theory to elite university social ties using original data on degree holding among the Forbes 400 wealthiest Americans and on the financial affiliations of all trustees on the boards of 60 top ranked U.S. universities.
+We develop a theory of elite embeddedness in which social organizations parallel to the economy can provide advantages via private information and reciprocity from other elites. The growing representation of private equity and hedge fund managers on university boards of trustees is analyzed to show how this increasingly wealthy sub-group of financiers gained elite social ties despite the decline of bank-based interlocks between corporate boards. We find evidence that financiers secured trustee positions both because of their high rates of elite degree holding and their attraction to trustee appointments at the most selective schools. We also find that private equity firms attained higher investment returns when their general partners held more trustee positions. The results suggest that benefits accrue to elite intermediaries from social closure in parallel social organizations such as universities.
 
-Working paper available at https://cshe.berkeley.edu/publications/social-circuitry-high-finance-universities-and-intimate-ties-among-economic-elites
+Appendix with supplementary analyses and methods information is available [here](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/ser/PAP/10.1093_ser_mwaf001/1/mwaf001_supplementary_data.docx?Expires=1742588877&Signature=V-T8Qs58~w9UytvXHkSLahiSxuaAWsA88FHRLU1P9JX8n4B~hMBPjBuLlF2hPsXeiiIRfZLH7mwf4VqXKJ6ACbgaSqr0~f4LHckdqdAdfJ7PH-fw5DG-eBRbZ-JWyI4iEaFTyQ~G5iJnpWKX41ps1NMxvSwyuJAWHsA4and6c6PBQA~LKSNAiWaID~hHWQA5weWKV0FmiJ6C94jAb4KwqTbCu2SAKcoSX1Y-XGEurFh~2A7EFRKP3C71ak7NsxDBnDRu6boyWsy1CXQ7zt~-S1dGGM8K4YTDUSggcGGQwPVXy1oqug-wE9CB-gUjeDS35fRYvMU4NhGWrUNF-ohXDw__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA).
