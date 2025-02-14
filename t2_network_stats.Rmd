@@ -1,0 +1,138 @@
+---
+title: "Table 2 - Network statistics"
+output: html_document
+---
+
+Load libraries
+```{r warning=FALSE}
+library(tidyverse)
+library(foreign) # to read the stata files
+library(rstatix) # data analysis package
+library(psych) # data analysis package
+library(stargazer) # creates tables from R statistical output
+library(sjPlot)# creates tables from R statistical output
+library(ggpubr) # ggplot extension for lm
+library(GGally)
+library(haven) # to export stata files
+library(qwraps2)
+library(ggpmisc)
+library(plm)
+library(cowplot)
+library(lmtest)
+library(sandwich)
+library(car)
+library(ggrepel)
+library(olsrr)
+library(clubSandwich)
+library(patchwork)
+library(pscl)
+library(igraph)
+library(visNetwork)
+library(RColorBrewer)
+library(ggraph)
+library(ggforce)
+library(tidygraph)
+library(graphlayouts)
+library(oaqc)
+library(concaveman)
+library(scales)
+library(gtsummary)
+library(fastDummies)
+library(table1)
+```
+
+
+
+Load data
+```{r}
+board_members <- read_dta("board_members_all_long20231117.dta")
+```
+
+
+Modify the datasets
+```{r}
+#Limit observations to top 60 from 2003 to 2017
+board_members <- board_members %>% 
+  filter(schooltype!="liberal arts") %>% 
+  filter(unitid!=232186 & unitid!=126818 & unitid!=209542 & unitid!=221759 & unitid!=102614 & unitid!=129020 & unitid!=181464) %>% 
+  filter(year > 2002)
+
+# Create dummy variables for each type of board member
+board_members <- board_members %>% 
+  mutate(Alt_finance_x = ifelse(employer_type_aggregated=="PE and hedge funds",1,0),
+         Other_finance_x =  ifelse(employer_type_aggregated=="Other finance",1,0),
+         Edu_sci_med_x =  ifelse(employer_type_aggregated=="Education science medicine",1,0),
+         Nonfinance_business_x =  ifelse(employer_type_aggregated=="Non-financial business",1,0),
+         Nonprofit_x =  ifelse(employer_type_aggregated=="Non-profits/philanthropy",1,0),
+         Public_sector_x =  ifelse(employer_type_aggregated=="Public sector",1,0),
+         Real_estate_x = ifelse(employer_type_aggregated=="Real estate",1,0),
+         Private = ifelse(schooltype=="research",1,0),
+         Public = ifelse(schooltype=="public",1,0))
+```
+
+
+Table 2: Weighted degree of network centrality for trustees’ economic organizations by industry
+```{r}
+board_members_organizations <- board_members %>%
+  select(strength, employer_type_aggregated, year, firmname_new) %>%
+  unique() %>% 
+  filter(employer_type_aggregated != "Unknown_sector")
+
+degree <- board_members_organizations %>%   
+  filter(year == 2003 | year == 2017) %>%   
+  group_by(employer_type_aggregated, year) %>% 
+  summarise(mean = round(mean(strength),2),
+            sd = round(sd(strength), 2), 
+            count = n()) %>% 
+  mutate(year = as.character(year)) %>% 
+  arrange(year, desc(mean))
+
+degree_all <- board_members_organizations %>%
+  group_by(employer_type_aggregated) %>% 
+  summarise(mean = round(mean(strength),2),
+            sd = round(sd(strength), 2),
+            count = n()) %>% 
+  mutate(year = "2003 to 2017") %>% 
+  arrange(desc(mean))
+    
+degree <- bind_rows(degree, degree_all)
+
+degree <- degree %>% 
+  mutate(Mean_SD_Count = paste(mean, '\n', "(", sd, ")", '\n', "N = ", count, sep = "")) %>% 
+  select(employer_type_aggregated, Mean_SD_Count, year) %>% 
+  pivot_wider(names_from = year, values_from = Mean_SD_Count)
+
+
+## Summary for all sectors
+degree_x <- board_members_organizations %>%   
+  filter(year == 2003 | year == 2017) %>% 
+  group_by(year) %>% 
+  summarise(mean = round(mean(strength),2),
+            sd = round(sd(strength), 2), 
+            count = n()) %>% 
+  mutate(year = as.character(year)) %>% 
+  arrange(year, desc(mean))
+
+degree_all_x <- board_members_organizations %>%
+  summarise(mean = round(mean(strength),2),
+            sd = round(sd(strength), 2),
+            count = n()) %>% 
+  mutate(year = "2003 to 2017") %>% 
+  arrange(desc(mean))
+    
+degree_x <- bind_rows(degree_x, degree_all_x)
+
+degree_x <- degree_x %>% 
+  mutate(employer_type_aggregated = "All sectors") %>% 
+  mutate(Mean_SD_Count = paste(mean, '\n', "(", sd, ")", '\n', "N = ", count, sep = "")) %>% 
+  select(employer_type_aggregated, Mean_SD_Count, year) %>% 
+  pivot_wider(names_from = year, values_from = Mean_SD_Count)
+
+
+degree <- bind_rows(degree, degree_x)
+
+rm(degree_x, degree_all_x, degree_all)
+
+write.csv(degree, file = "Table_2.csv")
+```
+

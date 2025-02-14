@@ -1,0 +1,145 @@
+---
+title: "Table A.2 - PE firm statistics"
+output: html_document
+---
+
+Load libraries
+```{r warning=FALSE}
+library(tidyverse)
+library(foreign) # to read the stata files
+library(rstatix) # data analysis package
+library(psych) # data analysis package
+library(stargazer) # creates tables from R statistical output
+library(sjPlot)# creates tables from R statistical output
+library(ggpubr) # ggplot extension for lm
+library(GGally)
+library(haven) # to export stata files
+library(qwraps2)
+library(ggpmisc)
+library(plm)
+library(cowplot)
+library(lmtest)
+library(sandwich)
+library(car)
+library(ggrepel)
+library(olsrr)
+library(clubSandwich)
+library(patchwork)
+library(pscl)
+library(igraph)
+library(visNetwork)
+library(RColorBrewer)
+library(ggraph)
+library(ggforce)
+library(tidygraph)
+library(graphlayouts)
+library(oaqc)
+library(concaveman)
+library(scales)
+library(gtsummary)
+library(fastDummies)
+library(table1)
+```
+
+
+
+Load data
+```{r}
+preqin <- read_dta("preqin_sandp_trustee_ties.dta")
+```
+
+
+Modify the dataset
+```{r}
+preqin_updated <- preqin %>% 
+  mutate(strength = ifelse(is.na(strength), 0, strength),
+         Non_finance_business = ifelse(is.na(Non_finance_business), 0, Non_finance_business)) %>%
+  mutate(All_other_ties = strength-Non_finance_business,
+         excess_irr = net_irr_pcent - sp500_return_pct) %>% 
+  mutate(fund_type = ifelse(fund_type== "Early Stage: Seed", "Early_Stage",
+                     ifelse(fund_type== "Early Stage: Start-up", "Early_Stage",
+                     ifelse(fund_type== "Early Stage", "Early_Stage",
+                     ifelse(fund_type== "Direct Secondaries", "Secondaries",
+                     ifelse(fund_type== "Co-Investment Multi-Manager", "Coinvestment",
+                     ifelse(fund_type== "Co-investment", "Coinvestment",
+                     ifelse(fund_type== "Fund of Funds", "Fund_of_Funds",
+                     ifelse(fund_type== "Venture (General)", "Venture",
+                     ifelse(fund_type== "Expansion / Late Stage", "Expansion", fund_type)))))))))) %>% 
+  filter(!is.na(net_irr_pcent), !is.na(fundvaluemnusd)) %>% 
+  filter(fund_focus=="US"|fund_focus=="Europe" | fund_focus == "Diversified Multi-Re")
+```
+
+
+Table A.2: Private equity fund types and fund focus by share of capital invested
+```{r}
+my.render.cont <- function(x) {
+    with(stats.apply.rounding(stats.default(x), digits=4), c("",
+        "Mean (SD)"=sprintf("%s (%s)", MEAN, SD)))
+}
+
+# Fund Focus for all PE firms
+preqin_fund_focus <- preqin_updated %>% 
+  mutate(fund_focus = ifelse(fund_focus=="Diversified Multi-Re","Diversified",fund_focus)) %>% 
+  group_by(firmid, year, fund_focus) %>%
+  summarise(fund_size = sum(fundvaluemnusd, na.rm = TRUE)) %>% 
+  mutate(fund_size_pct = round(fund_size*100/sum(fund_size, na.rm = TRUE),2)) %>% 
+  select(firmid, year, fund_focus, fund_size_pct) %>% 
+  pivot_wider(names_from = fund_focus, values_from = c(fund_size_pct)) %>% 
+  replace(is.na(.), 0) %>% 
+  group_by(firmid) %>% 
+  mutate(count = n()) %>% 
+  filter(count>1)
+  
+table1(~ Europe + US + Diversified, data = preqin_fund_focus, render.continuous=my.render.cont)  
+
+# Fund focus for PE firms with trustee ties
+preqin_fund_focus_top60 <- preqin_updated %>% 
+  mutate(fund_focus = ifelse(fund_focus=="Diversified Multi-Re","Diversified",fund_focus)) %>% 
+  group_by(firmid, year, fund_focus, strength) %>%
+  summarise(fund_size = sum(fundvaluemnusd, na.rm = TRUE)) %>% 
+  mutate(fund_size_pct = round(fund_size*100/sum(fund_size, na.rm = TRUE),2)) %>% 
+  select(firmid, year, fund_focus, fund_size_pct, strength) %>% 
+  group_by(firmid) %>% 
+  mutate(max_strength = max(strength, na.rm = TRUE)) %>% 
+  filter(max_strength > 0) %>% 
+  mutate(count = n()) %>% 
+  filter(count>1) %>% 
+  pivot_wider(names_from = fund_focus, values_from = c(fund_size_pct)) %>% 
+  replace(is.na(.), 0)
+  
+table1(~ Europe + US + Diversified, data = preqin_fund_focus_top60, render.continuous=my.render.cont)  
+
+# Fund type for all PE firms
+preqin_fund_type <- preqin_updated %>% 
+  group_by(firmid, year, fund_type) %>%
+  summarise(fund_size = sum(fundvaluemnusd, na.rm = TRUE)) %>% 
+  mutate(fund_size_pct = round(fund_size*100/sum(fund_size, na.rm = TRUE),2)) %>% 
+  select(firmid, year, fund_type, fund_size_pct) %>% 
+  pivot_wider(names_from = fund_type, values_from = c(fund_size_pct)) %>% 
+  replace(is.na(.), 0) %>% 
+  group_by(firmid) %>% 
+  mutate(count = n()) %>% 
+  filter(count>1)
+
+table1(~ Buyout + Growth + Fund_of_Funds + Venture + Coinvestment + Expansion + Secondaries + Early_Stage + Balanced + Turnaround, data = preqin_fund_type, render.continuous=my.render.cont)  
+
+# Fund type for PE firms with trustee ties 
+preqin_fund_type_top60 <- preqin_updated %>% 
+  group_by(firmid, year, fund_type, strength) %>%
+  summarise(fund_size = sum(fundvaluemnusd, na.rm = TRUE)) %>% 
+  mutate(fund_size_pct = round(fund_size*100/sum(fund_size, na.rm = TRUE),2)) %>% 
+  select(firmid, year, fund_type, fund_size_pct, strength) %>% 
+  group_by(firmid) %>% 
+  mutate(max_strength = max(strength, na.rm = TRUE)) %>% 
+  filter(max_strength > 0) %>% 
+  mutate(count = n()) %>% 
+  filter(count>1) %>% 
+  pivot_wider(names_from = fund_type, values_from = c(fund_size_pct)) %>% 
+  replace(is.na(.), 0)%>% 
+  group_by(firmid) %>% 
+  mutate(count = n()) %>% 
+  filter(count>1)
+
+table1(~ Buyout + Growth + Fund_of_Funds + Venture + Coinvestment + Expansion + Secondaries + Early_Stage + Balanced, data = preqin_fund_type_top60, render.continuous=my.render.cont)  
+```
+
