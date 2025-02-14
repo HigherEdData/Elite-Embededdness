@@ -4,13 +4,14 @@
 
 Publication in *Socio-Economic Review* is available open access here: https://academic.oup.com/ser/advance-article/doi/10.1093/ser/mwaf001/8002550
 
-Summary: We show that universities are social organizations parallel to the economy that provide a circuitry connecting financiers to other elites, despite growing complexity and fragmentation in finance.
+Summary: We show that universities are social organizations parallel to the economy that socially embed financiers, connecting them to other elites despite growing organizational complexity and fragmentation in finance.
 
 **Data**
-  - University Board Member DataHub Data
-  - Forbes 400
-  - Prequin Private Equity Returns
-  - IPEDS Admissions and Test Scores
+  - University Board Member DataHub Data (original)
+  - Forbes 400 (anonymized in accordance with proprietary data requirements).
+  - Prequin Private Equity Returns (not provided in this repository because of proprietary restricted access).
+  - IPEDS Admissions, financial aid, revenue, endowment assets and enrollment by race
+  - NACUBO endowment assets
   - IPEDS Institutional Characteristics
 
 **Abstract**
