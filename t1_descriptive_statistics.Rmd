@@ -6,38 +6,7 @@ output: html_document
 Load libraries
 ```{r warning=FALSE}
 library(tidyverse)
-library(foreign) # to read the stata files
-library(rstatix) # data analysis package
-library(psych) # data analysis package
-library(stargazer) # creates tables from R statistical output
-library(sjPlot)# creates tables from R statistical output
-library(ggpubr) # ggplot extension for lm
-library(GGally)
-library(haven) # to export stata files
-library(qwraps2)
-library(ggpmisc)
-library(plm)
-library(cowplot)
-library(lmtest)
-library(sandwich)
-library(car)
-library(ggrepel)
-library(olsrr)
-library(clubSandwich)
-library(patchwork)
-library(pscl)
-library(igraph)
-library(visNetwork)
-library(RColorBrewer)
-library(ggraph)
-library(ggforce)
-library(tidygraph)
-library(graphlayouts)
-library(oaqc)
-library(concaveman)
-library(scales)
-library(gtsummary)
-library(fastDummies)
+library(haven)
 library(table1)
 ```
 
@@ -45,7 +14,7 @@ library(table1)
 
 Load data
 ```{r}
-board_members <- read_dta("board_members_all_long20231117.dta")
+board_members <- read_dta("d_trustees_long_network_ties_preqinids.dta")
 
 forbes <- read_dta("d_forbes400_alum_board_1989_2003_2017.dta")
 
@@ -132,6 +101,7 @@ my.render.cont <- function(x) {
 # Getting estimates from school_level
 school_level <- school_level %>% 
   mutate(rejectrate = 1 - acceptrate) %>% 
+  mutate(total03_revenue = ifelse(total03_revenue<0, NA, total03_revenue)) %>% 
   mutate(log_enrollment = log(fte_count),
          log_endowment = log(endowment_assets/cpi_scalar_2017),
          log_revenue = log(total03_revenue/cpi_scalar_2017))

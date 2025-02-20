@@ -6,46 +6,13 @@ output: html_document
 Load libraries
 ```{r warning=FALSE}
 library(tidyverse)
-library(foreign) # to read the stata files
-library(rstatix) # data analysis package
-library(psych) # data analysis package
-library(stargazer) # creates tables from R statistical output
-library(sjPlot)# creates tables from R statistical output
-library(ggpubr) # ggplot extension for lm
-library(GGally)
-library(haven) # to export stata files
-library(qwraps2)
-library(ggpmisc)
-library(plm)
-library(cowplot)
-library(lmtest)
-library(sandwich)
-library(car)
-library(ggrepel)
-library(olsrr)
-library(clubSandwich)
-library(patchwork)
-library(pscl)
-library(igraph)
-library(visNetwork)
-library(RColorBrewer)
-library(ggraph)
-library(ggforce)
-library(tidygraph)
-library(graphlayouts)
-library(oaqc)
-library(concaveman)
-library(scales)
-library(gtsummary)
-library(fastDummies)
-library(table1)
+library(haven)
 ```
-
 
 
 Load data
 ```{r}
-board_members <- read_dta("board_members_all_long20231117.dta")
+board_members <- read_dta("d_trustees_long_network_ties_preqinids.dta")
 ```
 
 
